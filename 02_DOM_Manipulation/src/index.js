@@ -76,11 +76,68 @@ const bookStore = {
     ]
   }
 
+console.log(document.querySelector("div"))
+console.log(document.querySelector("#header"))
+console.log(document.querySelector(".secondDiv"))
+console.log(document.querySelector("#book-list"))
+console.log(document.getElementById("book-list"))
+console.log(document.querySelectorAll("div"))
+console.log(document.getElementsByClassName("list"))
+console.log(document.getElementsByTagName("li"))
+const book_list = document.querySelector("#book-list")
+const h1 = document.querySelector("h1")
+h1.textContent = "Welcome to the Bookstore!"
+h1.innerText = "Flatiron Bookstore"
+
+body = document.querySelector("body")
+const newDiv = document.createElement("div")
+newDiv.innerHTML = `
+  <p> This is a new Div </p>
+`
+body.append(newDiv)
+// newDiv.remove()
+newDiv.innerHTML = ""
 
 
-// const div = document.querySelector("div")
-// div.textContent = "Some Text"
-// div.innerText = "Inner Text"
+function renderHeader(){
+    return document.querySelector("h1").textContent = bookStore.name
+}
+renderHeader()
+
+const renderH1 = () => {
+    const header = document.querySelector("h1")
+    header.textContent = bookStore["name"]
+}
+renderH1()
+
+function renderFooter(){
+    const footers = document.querySelectorAll('footer div')
+    console.log(footers)
+    footers[0].textContent = bookStore.name
+    footers[1].textContent = bookStore.address
+    footers[2].textContent = bookStore.hours
+    return footers
+}
+renderFooter()
+
+// bookStore.inventory.forEach((book) => {
+//     console.log(book)
+//     const li = document.createElement("li")
+//     const h3 = document.createElement("h3")
+//     const pAuthor = document.createElement("p")
+//     const pPrice = document.createElement("p")
+//     const image = document.createElement("img")
+//     const btn = document.createElement("button")
+//     h3.textContent = book.title
+//     pAuthor.textContent = book.author
+//     pPrice.textContent = `$ ${book.price}`
+//     image.src = book.imageUrl
+//     btn.textContent = "Delete"
+//     li.className = "list-li"
+//     li.append(h3, pAuthor, pPrice, image, btn)
+//     // book_list.append(li)
+//     document.querySelector("#book-list").append(li)
+// })
 
 
 //* 1. use a forEach to iterate over BookStore inventory.
@@ -91,6 +148,22 @@ const bookStore = {
 
 //* Refactor to make the anonymous callback its own function so it can be reused later. 
 
-
-
+const renderBookCard = (book) => {
+    console.log(book)
+    const li = document.createElement("li")
+    const h3 = document.createElement("h3")
+    const pAuthor = document.createElement("p")
+    const pPrice = document.createElement("p")
+    const image = document.createElement("img")
+    const btn = document.createElement("button")
+    h3.textContent = book.title
+    pAuthor.textContent = book.author
+    pPrice.textContent = `$ ${book.price}`
+    btn.textContent = "Delete"
+    image.src = book.imageUrl
+    li.className = 'list-li'
+    li.append(h3, pAuthor, pPrice, image, btn)
+    book_list.append(li)
+}
+bookStore.inventory.forEach(renderBookCard)
 
