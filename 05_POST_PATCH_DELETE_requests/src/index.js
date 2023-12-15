@@ -1,12 +1,12 @@
 document.addEventListener("DOMContentLoaded", ()=> {
 
-    // fetch('http://localhost:4000/books')
+    // fetch('http://localhost:5555/books')
     // .then((res)=> res.json())
     // .then((book) => book.forEach(renderBookCard))
     // // .then((book) => renderBookCard(book))
     // .catch(e => console.log(e))
 
-    // fetch('http://localhost:4000/stores/1')
+    // fetch('http://localhost:5555/stores/1')
     // .then((response)=> response.json())
     // .then(store => {
     //     renderHeader(store)
@@ -61,6 +61,35 @@ document.addEventListener("DOMContentLoaded", ()=> {
         return footerDivs
     }
 
+    function handleDelete(cardData, event){
+        console.log(cardData)
+        event.preventDefault() 
+        fetch(`http://localhost:4000/books/${cardData.id}`, {
+            method: "DELETE",
+            headers: {"Content-Type": "application/json"},
+        })
+        .then(response => response.json())
+        .then(event.target.parentElement.remove())
+    }
+
+    function handleUpdate(cardData, event){
+        event.preventDefault()
+
+        const obj = {
+            inventory: parseInt(event.target.value)
+        }
+        fetch(`http://localhost:4000/books/${cardData.id}`, {
+            method: "PATCH",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+                inventory: parseInt(event.target.value)
+            })
+            // body: JSON.stringify(obj)
+        })
+        .then(response => response.json())
+        .catch(e => console.error(e))
+    }
+
     const renderBookCard = (cardData) => {
         console.log(cardData)
         const li = document.createElement('li')
@@ -69,15 +98,21 @@ document.addEventListener("DOMContentLoaded", ()=> {
         const pPrice = document.createElement('p')
         const image = document.createElement('img')
         const btn = document.createElement('button')
+        const pInventory = document.createElement("input")
         h3.textContent = cardData.title
         pAuthor.textContent = cardData.author
         pPrice.textContent = `$ ${cardData.price}`
         btn.textContent = "Delete"
         image.src = cardData.imageUrl
         li.className = 'list-li'
-        li.append(h3, pAuthor, pPrice, image, btn)
+        pInventory.type = "number"
+        pInventory.value = cardData.inventory
+        li.append(h3, pAuthor, pPrice, image, btn,pInventory)
         document.querySelector('#book-list').append(li)
-        btn.addEventListener('click', (e) => {li.remove()})
+        btn.addEventListener('click', (e) => {
+            handleDelete(cardData, e)
+        })
+        pInventory.addEventListener("change", (e)=> handleUpdate(cardData, e))
     }
     // bookStore.inventory.forEach(renderBookCard)
     
@@ -91,6 +126,24 @@ document.addEventListener("DOMContentLoaded", ()=> {
             inventory: e.target.inventory.value,
             reviews: []
         }
+
+        fetch("http://localhost:4000/books",{
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            // body: JSON.stringify({
+            //     title: e.target.title.value,
+            //     author: e.target.author.value,
+            //     price: e.target.price.value,
+            //     imageUrl: e.target.imageUrl.value,
+            //     inventory: e.target.inventory.value,
+            //     reviews: []
+            // })
+            body: JSON.stringify(book)
+        })
+        .then(response => response.json())
+        .then(console.log(data))
+        // .then(data => renderBookCard(data))
+        .then(renderBookCard)
         renderBookCard(book)
     })
     
